@@ -12,14 +12,16 @@
 #ifndef GMAPPING_JAVA_CPP_SLAM_GMAPPING_H
 #define GMAPPING_JAVA_CPP_SLAM_GMAPPING_H
 //#include "ros/ros.h"
-//#include "sensor_msgs/LaserScan.h"
-//#include "std_msgs/Float64.h"
+//#include "sensor_msgs/LaserScan.h"        ... Done
+//#include "std_msgs/Float64.h"             ... Done
 //#include "nav_msgs/GetMap.h"
 //#include "tf/transform_listener.h"
 //#include "tf/transform_broadcaster.h"
 //#include "message_filters/subscriber.h"
 //#include "tf/message_filter.h"
-
+#include <msg/GetMap.h>
+#include <msg/LaserScan.h>
+#include <msg/Float64.h>
 #include <gmapping/gridfastslam/gridslamprocessor.h>
 #include <gmapping/sensor/sensor_base/sensor.h>
 
@@ -35,12 +37,12 @@ public:
 
     void init();
     void startLiveSlam();
-//    void startReplay(const std::string & bag_fname, std::string scan_topic);
+    void startReplay(const std::string & bag_fname, std::string scan_topic);
     void publishTransform();
 
-//    void laserCallback(const sensor_msgs::LaserScan::ConstPtr& scan);
-//    bool mapCallback(nav_msgs::GetMap::Request  &req,
-//                     nav_msgs::GetMap::Response &res);
+    void laserCallback(const sensor_msgs::LaserScan::ConstPtr& scan);
+    bool mapCallback(nav_msgs::GetMap::Request  &req,
+                     nav_msgs::GetMap::Response &res);
     void publishLoop(double transform_publish_period);
 
 private:
@@ -70,8 +72,8 @@ private:
     bool got_first_scan_;
 
     bool got_map_;
-//    nav_msgs::GetMap::Response map_;
-//
+    nav_msgs::GetMap::Response map_;
+
 //    ros::Duration map_update_interval_;
 //    tf::Transform map_to_odom_;
     boost::mutex map_to_odom_mutex_;
@@ -87,10 +89,12 @@ private:
     std::string map_frame_;
     std::string odom_frame_;
 
-//    void updateMap(const sensor_msgs::LaserScan& scan);
+    void updateMap(const sensor_msgs::LaserScan& scan);
 //    bool getOdomPose(GMapping::OrientedPoint& gmap_pose, const ros::Time& t);
-//    bool initMapper(const sensor_msgs::LaserScan& scan);
-//    bool addScan(const sensor_msgs::LaserScan& scan, GMapping::OrientedPoint& gmap_pose);
+    bool getOdomPose(GMapping::OrientedPoint& gmap_pose, const std::time_t& t);
+    bool initMapper(const sensor_msgs::LaserScan& scan);
+
+    bool addScan(const sensor_msgs::LaserScan& scan, GMapping::OrientedPoint& gmap_pose);
     double computePoseEntropy();
 
     // Parameters used by GMapping
