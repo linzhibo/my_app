@@ -18,10 +18,10 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 include_directories(src/main/cpp/include)
 
-add_subdirectory(src/main/cpp/gridfastslam)
-add_subdirectory(src/main/cpp/scanmatcher)
-add_subdirectory(src/main/cpp/sensor)
-add_subdirectory(src/main/cpp/utils)
+add_subdirectory(src/main/cpp/lib/gridfastslam)
+add_subdirectory(src/main/cpp/lib/scanmatcher)
+add_subdirectory(src/main/cpp/lib/sensor)
+add_subdirectory(src/main/cpp/lib/utils)
 
 add_library( # Sets the name of the library.
              slam-lib
@@ -30,7 +30,7 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
-             src/main/cpp/main.cpp)
+             src/main/cpp/src/main.cpp)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by

@@ -14,11 +14,12 @@
 //#include "ros/ros.h"
 //#include "sensor_msgs/LaserScan.h"        ... Done
 //#include "std_msgs/Float64.h"             ... Done
-//#include "nav_msgs/GetMap.h"
+//#include "nav_msgs/GetMap.h"              ... Done
 //#include "tf/transform_listener.h"
 //#include "tf/transform_broadcaster.h"
 //#include "message_filters/subscriber.h"
 //#include "tf/message_filter.h"
+#include <msg/tf/transform_listener.h>
 #include <msg/GetMap.h>
 #include <msg/LaserScan.h>
 #include <msg/Float64.h>
@@ -37,7 +38,7 @@ public:
 
     void init();
     void startLiveSlam();
-    void startReplay(const std::string & bag_fname, std::string scan_topic);
+//    void startReplay(const std::string & bag_fname, std::string scan_topic);
     void publishTransform();
 
     void laserCallback(const sensor_msgs::LaserScan::ConstPtr& scan);
@@ -51,10 +52,10 @@ private:
 //    ros::Publisher sst_;
 //    ros::Publisher sstm_;
 //    ros::ServiceServer ss_;
-//    tf::TransformListener tf_;
-//    message_filters::Subscriber<sensor_msgs::LaserScan>* scan_filter_sub_;
-//    tf::MessageFilter<sensor_msgs::LaserScan>* scan_filter_;
-//    tf::TransformBroadcaster* tfB_;
+    tf::TransformListener tf_;
+    message_filters::Subscriber<sensor_msgs::LaserScan>* scan_filter_sub_;
+    tf::MessageFilter<sensor_msgs::LaserScan>* scan_filter_;
+    tf::TransformBroadcaster* tfB_;
 
     GMapping::GridSlamProcessor* gsp_;
     GMapping::RangeSensor* gsp_laser_;
@@ -62,7 +63,7 @@ private:
     // symmetrical bounds as that's what gmapping expects)
     std::vector<double> laser_angles_;
     // The pose, in the original laser frame, of the corresponding centered laser with z facing up
-//    tf::Stamped<tf::Pose> centered_laser_pose_;
+    tf::Stamped<tf::Pose> centered_laser_pose_;
     // Depending on the order of the elements in the scan and the orientation of the scan frame,
     // We might need to change the order of the scan
     bool do_reverse_range_;
@@ -74,8 +75,8 @@ private:
     bool got_map_;
     nav_msgs::GetMap::Response map_;
 
-//    ros::Duration map_update_interval_;
-//    tf::Transform map_to_odom_;
+    ros::Duration map_update_interval_;
+    tf::Transform map_to_odom_;
     boost::mutex map_to_odom_mutex_;
     boost::mutex map_mutex_;
 
