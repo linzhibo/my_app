@@ -25,26 +25,57 @@ public:
     ~GSlam();
 
     void init();
-    void isWhitespace(std::string s);
-    bool getParam();
+    bool isWhitespace(std::string s);
+    bool getParam(std::map<std::string, double> param, std::string name, double &val);
+    bool getOdomPose(GMapping::OrientedPoint& gmap_pose, time_t t);
+    void startLiveSlam(const sensor_msgs::LaserScan::ConstPtr& scan);
+//    void laserCallback(const sensor_msgs::LaserScan::ConstPtr& scan);
+    void publishTransform();
+
+    void publishLoop();
 
 private:
+    //functions
+    double computePoseEntropy();    //can be used later
+    void updateMap(const sensor_msgs::LaserScan& scan);
+    bool initMapper(const sensor_msgs::LaserScan& scan);
+    bool addScan(const sensor_msgs::LaserScan& scan, GMapping::OrientedPoint& gmap_pose);
+
+    //variables
     int laser_count_;
-    int throttle_scans_;
+    double throttle_scans_; //int
+    bool got_first_scan_;
+    bool got_map_;
+    nav_msgs::GetMap::Response map_;
+//    bool do_reverse_range_;
+
+    GMapping::GridSlamProcessor* gsp_;
+    GMapping::RangeSensor* gsp_laser_;
+    GMapping::OdometrySensor* gsp_odom_;
+
+    boost::thread* transform_thread_;
+    boost::mutex map_mutex_;
+    unsigned int gsp_laser_beam_count_;
+
+//    std::string laser_frame_;
+
 
     // Parameters used by GMapping
+    std::vector<double> laser_angles_;
+    std::map<std::string, double> slam_param;
+    time_t map_update_interval_time_t;
+    double map_update_interval_;
     double maxRange_;
     double maxUrange_;
-    double maxrange_;
     double minimum_score_;
     double sigma_;
-    int kernelSize_;
+    double kernelSize_;     //int
     double lstep_;
     double astep_;
-    int iterations_;
+    double iterations_;     //int
     double lsigma_;
     double ogain_;
-    int lskip_;
+    double lskip_;          //int
     double srr_;
     double srt_;
     double str_;
@@ -53,7 +84,7 @@ private:
     double angularUpdate_;
     double temporalUpdate_;
     double resampleThreshold_;
-    int particles_;
+    double particles_;  //int
     double xmin_;
     double ymin_;
     double xmax_;
@@ -65,8 +96,8 @@ private:
     double lasamplerange_;
     double lasamplestep_;
 
-    unsigned long int seed_;
-
+//    unsigned long int seed_;
+    long int seed_;
     double transform_publish_period_;
     double tf_delay_;
 

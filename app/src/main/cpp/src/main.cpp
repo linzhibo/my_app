@@ -28,6 +28,9 @@ Java_com_orbbec_zhibo_gmapping_1java_1cpp_MainActivity_stringFromJNI(
     Sensor* sensor=new Sensor("Astra_mini");
     std::string sensorName = sensor->getName();
 
+    GSlam gslam;
+    gslam.startLiveSlam();
+
     return env->NewStringUTF(sensorName.c_str());
 }
 
